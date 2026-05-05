@@ -14,8 +14,8 @@ services:
     deploy:
       resources:
         limits:
-          cpus: "0.15"
-          memory: "20MB"
+          cpus: "0.10"
+          memory: "10MB"
     networks:
       - rinha
 
@@ -25,7 +25,7 @@ services:
     environment:
       - PORT=8080
       - INDEX_PATH=/data/index.bin
-      - WORKERS=1
+      - WORKERS=2
     expose:
       - "8080"
     healthcheck:
@@ -37,8 +37,8 @@ services:
     deploy:
       resources:
         limits:
-          cpus: "0.425"
-          memory: "165MB"
+          cpus: "0.45"
+          memory: "170MB"
     networks:
       - rinha
 
@@ -48,7 +48,7 @@ services:
     environment:
       - PORT=8080
       - INDEX_PATH=/data/index.bin
-      - WORKERS=1
+      - WORKERS=2
     expose:
       - "8080"
     healthcheck:
@@ -60,8 +60,8 @@ services:
     deploy:
       resources:
         limits:
-          cpus: "0.425"
-          memory: "165MB"
+          cpus: "0.45"
+          memory: "170MB"
     networks:
       - rinha
 
