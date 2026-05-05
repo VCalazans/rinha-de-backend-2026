@@ -1,9 +1,13 @@
+volumes:
+  sockets:
+
 services:
   lb:
-    image: nginx:alpine
+    image: haproxy:alpine
     container_name: rinha-lb
     volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - sockets:/sockets:rw
+      - ./haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
     ports:
       - "9999:9999"
     depends_on:
@@ -14,18 +18,22 @@ services:
     deploy:
       resources:
         limits:
-          cpus: "0.15"
-          memory: "20MB"
+          cpus: "0.10"
+          memory: "30MB"
     networks:
       - rinha
 
   api1:
     image: ghcr.io/vcalazans/rinha-api:latest
     container_name: rinha-api-1
+    user: root
     environment:
       - PORT=8080
       - INDEX_PATH=/data/index.bin
       - WORKERS=1
+      - UDS_PATH=/sockets/api1.sock
+    volumes:
+      - sockets:/sockets:rw
     expose:
       - "8080"
     healthcheck:
@@ -37,18 +45,22 @@ services:
     deploy:
       resources:
         limits:
-          cpus: "0.425"
-          memory: "165MB"
+          cpus: "0.45"
+          memory: "160MB"
     networks:
       - rinha
 
   api2:
     image: ghcr.io/vcalazans/rinha-api:latest
     container_name: rinha-api-2
+    user: root
     environment:
       - PORT=8080
       - INDEX_PATH=/data/index.bin
       - WORKERS=1
+      - UDS_PATH=/sockets/api2.sock
+    volumes:
+      - sockets:/sockets:rw
     expose:
       - "8080"
     healthcheck:
@@ -60,8 +72,8 @@ services:
     deploy:
       resources:
         limits:
-          cpus: "0.425"
-          memory: "165MB"
+          cpus: "0.45"
+          memory: "160MB"
     networks:
       - rinha
 
