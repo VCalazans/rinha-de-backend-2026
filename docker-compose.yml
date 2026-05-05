@@ -15,7 +15,7 @@ services:
       resources:
         limits:
           cpus: "0.10"
-          memory: "10MB"
+          memory: "30MB"
     networks:
       - rinha
 
@@ -38,7 +38,7 @@ services:
       resources:
         limits:
           cpus: "0.45"
-          memory: "170MB"
+          memory: "160MB"
     networks:
       - rinha
 
@@ -61,7 +61,7 @@ services:
       resources:
         limits:
           cpus: "0.45"
-          memory: "170MB"
+          memory: "160MB"
     networks:
       - rinha
 
