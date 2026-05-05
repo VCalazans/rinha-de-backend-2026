@@ -1,13 +1,17 @@
 volumes:
-  sockets:
+  shm:
 
 services:
   lb:
-    image: haproxy:alpine
+    image: ghcr.io/vcalazans/rinha-api:latest
     container_name: rinha-lb
+    user: root
+    environment:
+      - MODE=lb
+      - PORT=9999
+      - SHM_PATH=/shm/ring.bin
     volumes:
-      - sockets:/sockets:rw
-      - ./haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
+      - shm:/shm:rw
     ports:
       - "9999:9999"
     depends_on:
@@ -15,6 +19,12 @@ services:
         condition: service_healthy
       api2:
         condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://127.0.0.1:9999/ready"]
+      interval: 2s
+      timeout: 2s
+      retries: 10
+      start_period: 5s
     deploy:
       resources:
         limits:
@@ -28,12 +38,12 @@ services:
     container_name: rinha-api-1
     user: root
     environment:
+      - MODE=api_shm
       - PORT=8080
       - INDEX_PATH=/data/index.bin
-      - WORKERS=1
-      - UDS_PATH=/sockets/api1.sock
+      - SHM_PATH=/shm/ring.bin
     volumes:
-      - sockets:/sockets:rw
+      - shm:/shm:rw
     expose:
       - "8080"
     healthcheck:
@@ -41,7 +51,7 @@ services:
       interval: 2s
       timeout: 2s
       retries: 20
-      start_period: 10s
+      start_period: 30s
     deploy:
       resources:
         limits:
@@ -55,12 +65,12 @@ services:
     container_name: rinha-api-2
     user: root
     environment:
+      - MODE=api_shm
       - PORT=8080
       - INDEX_PATH=/data/index.bin
-      - WORKERS=1
-      - UDS_PATH=/sockets/api2.sock
+      - SHM_PATH=/shm/ring.bin
     volumes:
-      - sockets:/sockets:rw
+      - shm:/shm:rw
     expose:
       - "8080"
     healthcheck:
@@ -68,7 +78,7 @@ services:
       interval: 2s
       timeout: 2s
       retries: 20
-      start_period: 10s
+      start_period: 30s
     deploy:
       resources:
         limits:
