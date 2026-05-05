@@ -14,11 +14,10 @@ services:
     deploy:
       resources:
         limits:
-          cpus: "0.10"
-          memory: "10MB"
+          cpus: "0.15"
+          memory: "20MB"
     networks:
       - rinha
-    restart: unless-stopped
 
   api1:
     image: ghcr.io/vcalazans/rinha-api:latest
@@ -26,7 +25,7 @@ services:
     environment:
       - PORT=8080
       - INDEX_PATH=/data/index.bin
-      - WORKERS=2
+      - WORKERS=1
     expose:
       - "8080"
     healthcheck:
@@ -38,11 +37,10 @@ services:
     deploy:
       resources:
         limits:
-          cpus: "0.45"
-          memory: "170MB"
+          cpus: "0.425"
+          memory: "165MB"
     networks:
       - rinha
-    restart: unless-stopped
 
   api2:
     image: ghcr.io/vcalazans/rinha-api:latest
@@ -50,7 +48,7 @@ services:
     environment:
       - PORT=8080
       - INDEX_PATH=/data/index.bin
-      - WORKERS=2
+      - WORKERS=1
     expose:
       - "8080"
     healthcheck:
@@ -62,11 +60,10 @@ services:
     deploy:
       resources:
         limits:
-          cpus: "0.45"
-          memory: "170MB"
+          cpus: "0.425"
+          memory: "165MB"
     networks:
       - rinha
-    restart: unless-stopped
 
 networks:
   rinha:
