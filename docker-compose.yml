@@ -1,9 +1,9 @@
 services:
   lb:
-    image: haproxy:alpine
+    image: nginx:alpine
     container_name: rinha-lb
     volumes:
-      - ./haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
     ports:
       - "9999:9999"
     depends_on:
@@ -14,8 +14,8 @@ services:
     deploy:
       resources:
         limits:
-          cpus: "0.10"
-          memory: "30MB"
+          cpus: "0.15"
+          memory: "20MB"
     networks:
       - rinha
 
@@ -37,8 +37,8 @@ services:
     deploy:
       resources:
         limits:
-          cpus: "0.45"
-          memory: "160MB"
+          cpus: "0.425"
+          memory: "165MB"
     networks:
       - rinha
 
@@ -60,8 +60,8 @@ services:
     deploy:
       resources:
         limits:
-          cpus: "0.45"
-          memory: "160MB"
+          cpus: "0.425"
+          memory: "165MB"
     networks:
       - rinha
 
