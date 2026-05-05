@@ -26,7 +26,7 @@ services:
     environment:
       - PORT=8080
       - INDEX_PATH=/data/index.bin
-      - WORKERS=3
+      - WORKERS=2
     expose:
       - "8080"
     healthcheck:
@@ -50,7 +50,7 @@ services:
     environment:
       - PORT=8080
       - INDEX_PATH=/data/index.bin
-      - WORKERS=3
+      - WORKERS=2
     expose:
       - "8080"
     healthcheck:
