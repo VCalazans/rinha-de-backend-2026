@@ -1,12 +1,8 @@
-volumes:
-  sockets:
-
 services:
   lb:
     image: haproxy:alpine
     container_name: rinha-lb
     volumes:
-      - sockets:/sockets
       - ./haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
     ports:
       - "9999:9999"
@@ -26,14 +22,10 @@ services:
   api1:
     image: ghcr.io/vcalazans/rinha-api:latest
     container_name: rinha-api-1
-    user: root
     environment:
       - PORT=8080
       - INDEX_PATH=/data/index.bin
       - WORKERS=1
-      - UDS_PATH=/sockets/api1.sock
-    volumes:
-      - sockets:/sockets
     expose:
       - "8080"
     healthcheck:
@@ -53,14 +45,10 @@ services:
   api2:
     image: ghcr.io/vcalazans/rinha-api:latest
     container_name: rinha-api-2
-    user: root
     environment:
       - PORT=8080
       - INDEX_PATH=/data/index.bin
       - WORKERS=1
-      - UDS_PATH=/sockets/api2.sock
-    volumes:
-      - sockets:/sockets
     expose:
       - "8080"
     healthcheck:
