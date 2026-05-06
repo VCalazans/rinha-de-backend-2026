@@ -23,6 +23,7 @@ services:
     image: ghcr.io/vcalazans/rinha-api:latest
     container_name: rinha-api-1
     environment:
+      - MODE=api_uring
       - PORT=8080
       - INDEX_PATH=/data/index.bin
       - WORKERS=1
@@ -46,6 +47,7 @@ services:
     image: ghcr.io/vcalazans/rinha-api:latest
     container_name: rinha-api-2
     environment:
+      - MODE=api_uring
       - PORT=8080
       - INDEX_PATH=/data/index.bin
       - WORKERS=1
