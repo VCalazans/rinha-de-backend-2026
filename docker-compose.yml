@@ -1,18 +1,15 @@
-volumes:
-  shm:
-
 services:
   api1:
     image: ghcr.io/vcalazans/rinha-api:latest
     container_name: rinha-api-1
     user: root
+    ipc: shareable
+    shm_size: 8mb
     environment:
       - MODE=api_shm
       - PORT=8080
       - INDEX_PATH=/data/index.bin
-      - SHM_PATH=/shm/ring.bin
-    volumes:
-      - shm:/shm:rw
+      - SHM_PATH=/rinha_ring
     expose:
       - "8080"
     healthcheck:
@@ -33,13 +30,13 @@ services:
     image: ghcr.io/vcalazans/rinha-api:latest
     container_name: rinha-api-2
     user: root
+    ipc: "service:api1"
+    shm_size: 8mb
     environment:
       - MODE=api_shm
       - PORT=8080
       - INDEX_PATH=/data/index.bin
-      - SHM_PATH=/shm/ring.bin
-    volumes:
-      - shm:/shm:rw
+      - SHM_PATH=/rinha_ring
     expose:
       - "8080"
     healthcheck:
@@ -60,12 +57,12 @@ services:
     image: ghcr.io/vcalazans/rinha-api:latest
     container_name: rinha-lb
     user: root
+    ipc: "service:api1"
+    shm_size: 8mb
     environment:
       - MODE=lb
       - PORT=9999
-      - SHM_PATH=/shm/ring.bin
-    volumes:
-      - shm:/shm:rw
+      - SHM_PATH=/rinha_ring
     ports:
       - "9999:9999"
     depends_on:
