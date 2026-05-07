@@ -70,7 +70,7 @@ services:
       resources:
         limits:
           cpus: "0.10"
-          memory: "30MB"
+          memory: "10MB"
 
 networks:
   rinha:
