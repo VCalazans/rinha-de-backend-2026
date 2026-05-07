@@ -13,6 +13,7 @@ services:
       - "9999:9999"
     expose:
       - "8080"
+      - "8081"
     healthcheck:
       test: ["CMD", "wget", "-q", "--spider", "http://127.0.0.1:8080/ready"]
       interval: 2s
@@ -22,7 +23,7 @@ services:
     deploy:
       resources:
         limits:
-          cpus: "0.475"
+          cpus: "0.45"
           memory: "170MB"
     networks:
       - rinha
@@ -30,17 +31,16 @@ services:
   api2:
     image: ghcr.io/vcalazans/rinha-api:latest
     container_name: rinha-api-2
+    network_mode: "service:api1"
     security_opt:
       - seccomp=unconfined
     environment:
       - MODE=api_uring
-      - PORT=8080
+      - PORT=8081
       - INDEX_PATH=/data/index.bin
       - WORKERS=1
-    expose:
-      - "8080"
     healthcheck:
-      test: ["CMD", "wget", "-q", "--spider", "http://127.0.0.1:8080/ready"]
+      test: ["CMD", "wget", "-q", "--spider", "http://127.0.0.1:8081/ready"]
       interval: 2s
       timeout: 2s
       retries: 20
@@ -48,10 +48,8 @@ services:
     deploy:
       resources:
         limits:
-          cpus: "0.475"
+          cpus: "0.45"
           memory: "170MB"
-    networks:
-      - rinha
 
   lb:
     image: nginx:alpine
@@ -67,7 +65,7 @@ services:
     deploy:
       resources:
         limits:
-          cpus: "0.05"
+          cpus: "0.10"
           memory: "10MB"
 
 networks:
