@@ -2,17 +2,16 @@ services:
   api1:
     image: ghcr.io/vcalazans/rinha-api:latest
     container_name: rinha-api-1
-    security_opt:
-      - seccomp=unconfined
     environment:
-      - MODE=api_uring
+      - MODE=api_uds
       - PORT=8080
       - INDEX_PATH=/data/index.bin
       - WORKERS=1
-    ports:
-      - "9999:9999"
+      - UDS_LISTEN=/sockets/api1.sock
     expose:
       - "8080"
+    volumes:
+      - sockets:/sockets
     healthcheck:
       test: ["CMD", "wget", "-q", "--spider", "http://127.0.0.1:8080/ready"]
       interval: 2s
@@ -22,22 +21,24 @@ services:
     deploy:
       resources:
         limits:
-          cpus: "0.475"
-          memory: "170MB"
+          cpus: "0.35"
+          memory: "165MB"
     networks:
       - rinha
 
   api2:
     image: ghcr.io/vcalazans/rinha-api:latest
     container_name: rinha-api-2
-    network_mode: "service:api1"
-    security_opt:
-      - seccomp=unconfined
     environment:
-      - MODE=api_uring
+      - MODE=api_uds
       - PORT=8081
       - INDEX_PATH=/data/index.bin
       - WORKERS=1
+      - UDS_LISTEN=/sockets/api2.sock
+    expose:
+      - "8081"
+    volumes:
+      - sockets:/sockets
     healthcheck:
       test: ["CMD", "wget", "-q", "--spider", "http://127.0.0.1:8081/ready"]
       interval: 2s
@@ -47,15 +48,19 @@ services:
     deploy:
       resources:
         limits:
-          cpus: "0.475"
-          memory: "170MB"
+          cpus: "0.35"
+          memory: "165MB"
+    networks:
+      - rinha
 
   lb:
-    image: nginx:alpine
+    image: haproxy:2.9-alpine
     container_name: rinha-lb
-    network_mode: "service:api1"
+    ports:
+      - "9999:9999"
     volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
+      - sockets:/sockets
     depends_on:
       api1:
         condition: service_healthy
@@ -64,8 +69,17 @@ services:
     deploy:
       resources:
         limits:
-          cpus: "0.05"
-          memory: "10MB"
+          cpus: "0.30"
+          memory: "20MB"
+    networks:
+      - rinha
+
+volumes:
+  sockets:
+    driver_opts:
+      type: tmpfs
+      device: tmpfs
+      o: "size=1m,nr_inodes=8,mode=0777,noatime,nosuid,nodev"
 
 networks:
   rinha:
