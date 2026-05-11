@@ -16,6 +16,12 @@ services:
       - "8080"
     volumes:
       - sockets:/sockets
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://127.0.0.1:8080/ready"]
+      interval: 1s
+      timeout: 1s
+      retries: 60
+      start_period: 2s
     deploy:
       resources:
         limits:
@@ -41,6 +47,12 @@ services:
       - "8081"
     volumes:
       - sockets:/sockets
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://127.0.0.1:8081/ready"]
+      interval: 1s
+      timeout: 1s
+      retries: 60
+      start_period: 2s
     deploy:
       resources:
         limits:
@@ -62,8 +74,10 @@ services:
       - ./haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
       - sockets:/sockets
     depends_on:
-      - api1
-      - api2
+      api1:
+        condition: service_healthy
+      api2:
+        condition: service_healthy
     deploy:
       resources:
         limits:
