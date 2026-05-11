@@ -2,6 +2,10 @@ services:
   api1:
     image: ghcr.io/vcalazans/rinha-api:latest
     container_name: rinha-api-1
+    security_opt:
+      - seccomp=unconfined
+    ulimits:
+      nofile: 65535
     environment:
       - MODE=api_uds
       - PORT=8080
@@ -12,23 +16,21 @@ services:
       - "8080"
     volumes:
       - sockets:/sockets
-    healthcheck:
-      test: ["CMD", "wget", "-q", "--spider", "http://127.0.0.1:8080/ready"]
-      interval: 2s
-      timeout: 2s
-      retries: 20
-      start_period: 10s
     deploy:
       resources:
         limits:
-          cpus: "0.35"
-          memory: "165MB"
+          cpus: "0.30"
+          memory: "149MB"
     networks:
       - rinha
 
   api2:
     image: ghcr.io/vcalazans/rinha-api:latest
     container_name: rinha-api-2
+    security_opt:
+      - seccomp=unconfined
+    ulimits:
+      nofile: 65535
     environment:
       - MODE=api_uds
       - PORT=8081
@@ -39,47 +41,39 @@ services:
       - "8081"
     volumes:
       - sockets:/sockets
-    healthcheck:
-      test: ["CMD", "wget", "-q", "--spider", "http://127.0.0.1:8081/ready"]
-      interval: 2s
-      timeout: 2s
-      retries: 20
-      start_period: 10s
     deploy:
       resources:
         limits:
-          cpus: "0.35"
-          memory: "165MB"
+          cpus: "0.30"
+          memory: "149MB"
     networks:
       - rinha
 
   lb:
     image: haproxy:2.9-alpine
     container_name: rinha-lb
+    security_opt:
+      - seccomp=unconfined
+    ulimits:
+      nofile: 65535
     ports:
       - "9999:9999"
     volumes:
       - ./haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
       - sockets:/sockets
     depends_on:
-      api1:
-        condition: service_healthy
-      api2:
-        condition: service_healthy
+      - api1
+      - api2
     deploy:
       resources:
         limits:
-          cpus: "0.30"
-          memory: "20MB"
+          cpus: "0.40"
+          memory: "52MB"
     networks:
       - rinha
 
 volumes:
   sockets:
-    driver_opts:
-      type: tmpfs
-      device: tmpfs
-      o: "size=1m,nr_inodes=8,mode=0777,noatime,nosuid,nodev"
 
 networks:
   rinha:
