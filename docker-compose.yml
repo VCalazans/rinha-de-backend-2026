@@ -1,6 +1,6 @@
 services:
   api1:
-    image: ghcr.io/vcalazans/rinha-api:uds11
+    image: ghcr.io/vcalazans/rinha-api:uds12
     container_name: rinha-api-1
     security_opt:
       - seccomp=unconfined
@@ -25,13 +25,13 @@ services:
     deploy:
       resources:
         limits:
-          cpus: "0.30"
-          memory: "149MB"
+          cpus: "0.40"
+          memory: "165MB"
     networks:
       - rinha
 
   api2:
-    image: ghcr.io/vcalazans/rinha-api:uds11
+    image: ghcr.io/vcalazans/rinha-api:uds12
     container_name: rinha-api-2
     security_opt:
       - seccomp=unconfined
@@ -56,8 +56,8 @@ services:
     deploy:
       resources:
         limits:
-          cpus: "0.30"
-          memory: "149MB"
+          cpus: "0.40"
+          memory: "165MB"
     networks:
       - rinha
 
@@ -81,8 +81,8 @@ services:
     deploy:
       resources:
         limits:
-          cpus: "0.40"
-          memory: "52MB"
+          cpus: "0.20"
+          memory: "20MB"
     networks:
       - rinha
 
