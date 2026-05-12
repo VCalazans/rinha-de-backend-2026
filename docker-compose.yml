@@ -1,6 +1,6 @@
 services:
   api1:
-    image: ghcr.io/vcalazans/rinha-api:uds4
+    image: ghcr.io/vcalazans/rinha-api:uds5
     container_name: rinha-api-1
     security_opt:
       - seccomp=unconfined
@@ -31,7 +31,7 @@ services:
       - rinha
 
   api2:
-    image: ghcr.io/vcalazans/rinha-api:uds4
+    image: ghcr.io/vcalazans/rinha-api:uds5
     container_name: rinha-api-2
     security_opt:
       - seccomp=unconfined
