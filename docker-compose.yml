@@ -12,6 +12,7 @@ services:
       - INDEX_PATH=/data/index.bin
       - WORKERS=1
       - UDS_LISTEN=/sockets/api1.sock
+      - NPROBE=20
     expose:
       - "8080"
     volumes:
@@ -43,6 +44,7 @@ services:
       - INDEX_PATH=/data/index.bin
       - WORKERS=1
       - UDS_LISTEN=/sockets/api2.sock
+      - NPROBE=20
     expose:
       - "8081"
     volumes:
